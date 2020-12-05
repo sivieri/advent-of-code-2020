@@ -1,0 +1,7 @@
+target
+target/*
+*.pdf
+*.DS_STORE
+.idea
+.settings
+*.iml
