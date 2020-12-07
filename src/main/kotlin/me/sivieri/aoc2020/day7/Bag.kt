@@ -34,6 +34,26 @@ class Bag(
         else Pair(searchNames, false)
     }
 
+    fun countBags(s: String): Int? =
+        findBag(s)?.countBags()
+
+    private fun findBag(s: String): Bag? {
+        if (this.name == s) return this
+        if (bags.isEmpty()) return null
+        return bags
+            .map { it.key.findBag(s) }
+            .filterNotNull()
+            .firstOrNull()
+    }
+
+    private fun countBags(): Int =
+        if (bags.isEmpty()) 1
+        else 1 + bags
+            .entries
+            .sumBy {
+                it.value * it.key.countBags()
+            }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
