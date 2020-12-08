@@ -5,4 +5,12 @@ data class ExecutionResult(
     val lastValidLine: Int,
     val accumulator: Int,
     val executionSteps: List<ExecutionStep>
-)
+) {
+    fun deepCopy(): ExecutionResult =
+        ExecutionResult(
+            terminatedCorrectly,
+            lastValidLine,
+            accumulator,
+            executionSteps.map { it.copy() }
+        )
+}
