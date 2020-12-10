@@ -16,4 +16,8 @@ class AdaptersBag(
         return diffs.filter { it == 1 }.size * diffs.filter { it == 3 }.size
     }
 
+    fun findCombinations(): Long {
+        TODO("Not yet implemented")
+    }
+
 }
