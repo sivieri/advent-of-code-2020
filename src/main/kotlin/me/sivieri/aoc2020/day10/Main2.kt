@@ -10,7 +10,7 @@ object Main2 {
             .readInput(10)
             .map { it.toInt() }
         val bag = AdaptersBag(data)
-        val res = bag.findDifferenceProduct()
+        val res = bag.findCombinations()
         println(res)
     }
 

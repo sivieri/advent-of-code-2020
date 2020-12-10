@@ -88,7 +88,7 @@ class AdaptersBagTest {
             .map { it.toInt() }
         val bag = AdaptersBag(input)
         val res = bag.findCombinations()
-        Assert.assertEquals(8L, res)
+        Assert.assertEquals(8, res)
     }
 
     @Test
@@ -130,7 +130,7 @@ class AdaptersBagTest {
             .map { it.toInt() }
         val bag = AdaptersBag(input)
         val res = bag.findCombinations()
-        Assert.assertEquals(19208L, res)
+        Assert.assertEquals(19208, res)
     }
 
 }
