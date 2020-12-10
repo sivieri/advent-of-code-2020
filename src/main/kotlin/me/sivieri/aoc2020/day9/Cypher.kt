@@ -32,4 +32,27 @@ class Cypher {
         return false
     }
 
+    fun findMinMaxRangeSum(
+        input: List<Long>,
+        nonValid: Long
+    ): Long {
+        for (i in input.indices) {
+            val res = findRange(input.subList(i, input.size - i), 2, nonValid)
+            if (res.isNotEmpty()) return res.minOrNull()!! + res.maxOrNull()!!
+        }
+        return -1
+    }
+
+    private tailrec fun findRange(
+        input: List<Long>,
+        size: Int,
+        sum: Long
+    ): List<Long> {
+        if (size > input.size) return emptyList()
+        val currentSum = input.subList(0, size).sum()
+        if (currentSum == sum) return input.subList(0, size)
+        if (currentSum > sum) return emptyList()
+        return findRange(input, size + 1, sum)
+    }
+
 }
