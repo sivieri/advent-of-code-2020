@@ -24,7 +24,7 @@ class AdaptersBag(
         val sortedAdapters = adapters
             .sorted()
         val subsequences = mutableListOf<List<Int>>()
-        (0 until sortedAdapters.size - 1)
+        val latest = (0 until sortedAdapters.size - 1)
             .fold(0) { latest, i ->
                 if (sortedAdapters[i + 1] - sortedAdapters[i] >= 3) {
                     subsequences.add(sortedAdapters.subList(latest, i + 1))
@@ -32,18 +32,21 @@ class AdaptersBag(
                 }
                 else latest
             }
+        subsequences.add(sortedAdapters.subList(latest, sortedAdapters.size))
         val combinations = subsequences
             .map {
-                val candidates = findRemovableElements(1, it, emptyList())
-                    .toSet()
-                var counter: Long = 0
-                (0..candidates.size)
-                    .forEach { i ->
-                        Sets
-                            .combinations(candidates, i)
-                            .forEach { if (checkIfSound(sortedAdapters, it)) counter++ }
-                    }
-                counter
+                if (it.size < 3) 1
+                else {
+                    val candidates = it.subList(1, it.size - 1).toSet()
+                    var counter: Long = 0
+                    (0..candidates.size)
+                        .forEach { i ->
+                            Sets
+                                .combinations(candidates, i)
+                                .forEach { if (checkIfSound(sortedAdapters, it)) counter++ }
+                        }
+                    counter
+                }
             }
         return combinations.multiplyBy { it }
     }
@@ -53,24 +56,6 @@ class AdaptersBag(
             .filterNot { toBeRemoved.contains(it) }
         return (0 until prepared.size - 1)
             .all { prepared[it + 1] - prepared[it] <= 3 }
-    }
-
-    companion object {
-
-        private tailrec fun findRemovableElements(
-            index: Int,
-            list: List<Int>,
-            acc: List<Int>
-        ): List<Int> {
-            if (index >= list.size - 1) return acc
-            return if (list[index + 1] - list[index - 1] < 3) {
-                findRemovableElements(index + 1, list, acc.plus(list[index]))
-            }
-            else {
-                findRemovableElements(index + 1, list, acc)
-            }
-        }
-
     }
 
 }
