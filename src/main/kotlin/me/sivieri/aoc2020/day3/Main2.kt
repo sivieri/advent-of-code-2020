@@ -30,7 +30,7 @@ object Main2 {
             while (!map.isBottom()) {
                 map.move(it.first, it.second)
             }
-            map.counter
+            map.counter.toLong()
         }
         println(res)
     }

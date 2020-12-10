@@ -1,6 +1,7 @@
 package me.sivieri.aoc2020.day10
 
 import com.google.common.collect.Sets
+import me.sivieri.aoc2020.multiplyBy
 
 class AdaptersBag(
     private val adapters: List<Int>
@@ -21,26 +22,31 @@ class AdaptersBag(
     @Suppress("UnstableApiUsage")
     fun findCombinations(): Long {
         val sortedAdapters = adapters
-            .plus(0)
-            .plus(adapters.maxOrNull()!! + 3)
             .sorted()
-        val candidates = findRemovableElements(1, sortedAdapters, emptyList())
-            .toSet()
-        println("DEBUG - Found ${candidates.size} candidates")
-        var counter: Long = 0
-        (0..candidates.size)
-            .forEach { i ->
-                println("DEBUG - $i")
-                Sets
-                    .combinations(candidates, i)
-                    .filter { checkLength(it) }
-                    .forEach { if (checkIfSound(sortedAdapters, it)) counter++ }
+        val subsequences = mutableListOf<List<Int>>()
+        (0 until sortedAdapters.size - 1)
+            .fold(0) { latest, i ->
+                if (sortedAdapters[i + 1] - sortedAdapters[i] >= 3) {
+                    subsequences.add(sortedAdapters.subList(latest, i + 1))
+                    i + 1
+                }
+                else latest
             }
-        return counter
+        val combinations = subsequences
+            .map {
+                val candidates = findRemovableElements(1, it, emptyList())
+                    .toSet()
+                var counter: Long = 0
+                (0..candidates.size)
+                    .forEach { i ->
+                        Sets
+                            .combinations(candidates, i)
+                            .forEach { if (checkIfSound(sortedAdapters, it)) counter++ }
+                    }
+                counter
+            }
+        return combinations.multiplyBy { it }
     }
-
-    private fun checkLength(set: Set<Int>): Boolean =
-        set.isEmpty() || set.size != 3 || set.maxOrNull()!! - set.minOrNull()!! != 2
 
     private fun checkIfSound(numbers: List<Int>, toBeRemoved: Set<Int>): Boolean {
         val prepared = numbers

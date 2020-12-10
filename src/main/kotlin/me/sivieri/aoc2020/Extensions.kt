@@ -8,7 +8,7 @@ internal fun <T> Stream<T>.toList(): List<T> =
         .asSequence()
         .toList()
 
-internal fun <T> List<T>.multiplyBy(f: (T) -> Int): Long =
+internal fun <T> List<T>.multiplyBy(f: (T) -> Long): Long =
     this.fold(1) { acc, t ->
         acc * f(t)
     }
