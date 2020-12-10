@@ -22,6 +22,7 @@ class AdaptersBag(
     @Suppress("UnstableApiUsage")
     fun findCombinations(): Long {
         val sortedAdapters = adapters
+            .let { if (adapters.minOrNull()!! <= 2) adapters.plus(0) else adapters }
             .sorted()
         val subsequences = mutableListOf<List<Int>>()
         val latest = (0 until sortedAdapters.size - 1)
