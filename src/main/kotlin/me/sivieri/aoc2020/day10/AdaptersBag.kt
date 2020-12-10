@@ -19,7 +19,7 @@ class AdaptersBag(
     }
 
     @Suppress("UnstableApiUsage")
-    fun findCombinations(): Int {
+    fun findCombinations(): Long {
         val sortedAdapters = adapters
             .plus(0)
             .plus(adapters.maxOrNull()!! + 3)
@@ -27,28 +27,26 @@ class AdaptersBag(
         val candidates = findRemovableElements(1, sortedAdapters, emptyList())
             .toSet()
         println("DEBUG - Found ${candidates.size} candidates")
-        var counter = 0
+        var counter: Long = 0
         (0..candidates.size)
             .forEach { i ->
-                val combinations = Sets
+                println("DEBUG - $i")
+                Sets
                     .combinations(candidates, i)
-                println("DEBUG - ${combinations.size} combinations for $i")
-                val res = combinations
-                    .filter { checkIfSound(sortedAdapters, it) }
-                    .size
-                println("DEBUG - $res good combinations for $i")
-                counter += res
+                    .filter { checkLength(it) }
+                    .forEach { if (checkIfSound(sortedAdapters, it)) counter++ }
             }
         return counter
     }
 
+    private fun checkLength(set: Set<Int>): Boolean =
+        set.isEmpty() || set.size != 3 || set.maxOrNull()!! - set.minOrNull()!! != 2
+
     private fun checkIfSound(numbers: List<Int>, toBeRemoved: Set<Int>): Boolean {
         val prepared = numbers
             .filterNot { toBeRemoved.contains(it) }
-        return prepared
-            .subList(0, prepared.size - 1)
-            .zip(prepared.subList(1, prepared.size))
-            .all { it.second - it.first <= 3 }
+        return (0 until prepared.size - 1)
+            .all { prepared[it + 1] - prepared[it] <= 3 }
     }
 
     companion object {
@@ -59,7 +57,7 @@ class AdaptersBag(
             acc: List<Int>
         ): List<Int> {
             if (index >= list.size - 1) return acc
-            return if (list[index + 1] - list[index - 1] <= 3) {
+            return if (list[index + 1] - list[index - 1] < 3) {
                 findRemovableElements(index + 1, list, acc.plus(list[index]))
             }
             else {
