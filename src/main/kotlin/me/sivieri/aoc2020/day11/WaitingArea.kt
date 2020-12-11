@@ -14,6 +14,7 @@ class WaitingArea(
         var counter = 0
         while (turn()) {
             counter++
+            println(counter)
         }
         return counter
     }

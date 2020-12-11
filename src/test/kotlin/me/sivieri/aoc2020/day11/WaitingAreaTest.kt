@@ -29,4 +29,28 @@ class WaitingAreaTest {
         Assert.assertEquals(37, occupiedSeats)
     }
 
+    @Test
+    fun `02 test stabilization`() {
+        val input = """
+            L.LL.LL.LL
+            LLLLLLL.LL
+            L.L.L..L..
+            LLLL.LL.LL
+            L.LL.LL.LL
+            L.LLLLL.LL
+            ..L.L.....
+            LLLLLLLLLL
+            L.LLLLLL.L
+            L.LLLLL.LL
+        """.trimIndent()
+            .split("\n")
+            .map { it.toCharArray().toTypedArray() }
+            .toTypedArray()
+        val waitingArea = ComplexWaitingArea(input)
+        val iterations = waitingArea.stabilizeArea()
+        val occupiedSeats = waitingArea.countOccupiedSeats()
+        Assert.assertEquals(6, iterations)
+        Assert.assertEquals(26, occupiedSeats)
+    }
+
 }
