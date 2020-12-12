@@ -33,4 +33,13 @@ class PositionTest {
         Assert.assertEquals(38, position.y)
     }
 
+    @Test
+    fun `04 move with`() {
+        val position = Position(170, 38, Direction.East)
+        val other = Position(4, -10, Direction.East)
+        position.moveWith(11, other)
+        Assert.assertEquals(214, position.x)
+        Assert.assertEquals(-72, position.y)
+    }
+
 }

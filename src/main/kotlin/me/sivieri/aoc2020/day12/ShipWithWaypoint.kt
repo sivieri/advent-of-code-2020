@@ -15,7 +15,7 @@ class ShipWithWaypoint {
             val value = m.substring(1).toInt()
             when (order) {
                 'R' -> waypoint.moveAround(value)
-                'L' -> ship.moveAround(-value)
+                'L' -> waypoint.moveAround(-value)
                 'F' -> ship.moveWith(value, waypoint)
                 else -> waypoint.move(value, Direction.fromRepr(order))
             }
