@@ -1,6 +1,7 @@
 package me.sivieri.aoc2020.day13
 
 import me.sivieri.aoc2020.zipWithIndex
+import kotlin.math.max
 
 object Buses {
 
@@ -19,13 +20,14 @@ object Buses {
             .zipWithIndex()
             .filterNot { it.second == "x" }
             .map { Pair(it.first, it.second.toInt()) }
-        var time = 0L
+        val maxIndex = busesIndexed.maxByOrNull { it.second }!!
+        var time = -maxIndex.first.toLong()
         while (true) {
             val test = busesIndexed.all {
                 (time + it.first) % it.second == 0L
             }
             if (test) return time
-            time++
+            time += maxIndex.second
             if (time % 100_000_000 == 0L) println(time)
         }
     }
