@@ -6,9 +6,11 @@ podTemplate(containers: [
 
   node(POD_LABEL) {
     stage('build') {
+      git 'http://192.168.8.11:30280/sivieri/advent-of-code-2020.git'
       container('maven') {
-          sh 'ls -al'
+          sh 'mvn -B clean package'
       }
+      junit '**/target/surefire-reports/TEST-*.xml'
     }
   }
 }
