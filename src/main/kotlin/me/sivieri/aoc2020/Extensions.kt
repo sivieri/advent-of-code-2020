@@ -16,3 +16,6 @@ internal fun <T> List<T>.multiplyBy(f: (T) -> Long): Long =
 internal fun <T> List<T>.head(): T = this.first()
 
 internal fun <T> List<T>.tail(): List<T> = this.subList(1, this.size)
+
+internal fun <T> List<T>.zipWithIndex(): List<Pair<Int, T>> =
+    this.mapIndexed { index, t -> Pair(index, t) }
