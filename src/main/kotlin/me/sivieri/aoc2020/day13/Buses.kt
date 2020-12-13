@@ -1,7 +1,7 @@
 package me.sivieri.aoc2020.day13
 
+import me.sivieri.aoc2020.multiplyBy
 import me.sivieri.aoc2020.zipWithIndex
-import kotlin.math.max
 
 object Buses {
 
@@ -20,15 +20,38 @@ object Buses {
             .zipWithIndex()
             .filterNot { it.second == "x" }
             .map { Pair(it.first, it.second.toInt()) }
-        val maxIndex = busesIndexed.maxByOrNull { it.second }!!
-        var time = -maxIndex.first.toLong()
+        return searchNewIncrement(2, 0, 1, busesIndexed)
+    }
+
+    private tailrec fun searchNewIncrement(
+        lastIndex: Int,
+        start: Long,
+        increment: Long,
+        buses: List<Pair<Int, Int>>
+    ): Long {
+        if (lastIndex > buses.size) return start
+        val sublist = buses.subList(0, lastIndex)
+        val res = findWithIncrement(sublist, start, increment)
+        return searchNewIncrement(
+            lastIndex + 1,
+            res,
+            sublist.multiplyBy { it.second.toLong() },
+            buses
+        )
+    }
+
+    private fun findWithIncrement(
+        buses: List<Pair<Int, Int>>,
+        start: Long,
+        increment: Long
+    ): Long {
+        var time = start
         while (true) {
-            val test = busesIndexed.all {
+            val test = buses.all {
                 (time + it.first) % it.second == 0L
             }
             if (test) return time
-            time += maxIndex.second
-            if (time % 100_000_000 == 0L) println(time)
+            time += increment
         }
     }
 
