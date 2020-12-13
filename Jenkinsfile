@@ -1,5 +1,5 @@
 podTemplate(containers: [
-  containerTemplate(name: 'maven', image: 'maven:3-openjdk-alpine', ttyEnabled: true, command: 'cat')
+  containerTemplate(name: 'maven', image: 'maven:3-alpine', ttyEnabled: true, command: 'cat')
   ], volumes: [
   persistentVolumeClaim(mountPath: '/root/.m2/repository', claimName: 'jenkins-maven-pv-claim', readOnly: false)
   ]) {
