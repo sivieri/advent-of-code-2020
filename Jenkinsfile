@@ -7,7 +7,7 @@ podTemplate(containers: [
   node(POD_LABEL) {
     stage('build') {
       container('maven') {
-          ls -al
+          sh 'ls -al'
       }
     }
   }
