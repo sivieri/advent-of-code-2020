@@ -27,13 +27,13 @@ class BitMask(
 
     fun apply(number: Long): Long {
         val numberString = LongRepresentation.toStringRepresentation(number)
-        val numberBits = BitSet(numberString.length)
+        val numberBits = BitSet(maskLength)
         parseString(numberString) { index, c ->
             if (c[index] == '1') numberBits.set(index)
         }
         numberBits.andNot(mask)
         numberBits.or(valueAndMask)
-        return numberBits.toLong(numberString.length)
+        return numberBits.toLong(maskLength)
     }
 
     override fun equals(other: Any?): Boolean {
