@@ -2,18 +2,11 @@ package me.sivieri.aoc2020.day14
 
 import java.lang.IllegalArgumentException
 
-class MemoryHandler {
+abstract class MemoryHandler {
 
-    private lateinit var bitMask: BitMask
-    private val memory: MutableMap<Int, Long> = mutableMapOf()
+    protected val memory: MutableMap<Int, Long> = mutableMapOf()
 
-    fun executeInput(input: MemoryInput) {
-        bitMask = input.bitMask
-        input.values.forEach { (location, value) ->
-            val valueAfterMask = bitMask.apply(value)
-            memory[location] = valueAfterMask
-        }
-    }
+    abstract fun executeInput(input: MemoryInput)
 
     fun sum(): Long =
         memory.values.sum()
@@ -21,7 +14,7 @@ class MemoryHandler {
     companion object {
 
         @Suppress("RegExpRedundantEscape")
-        private val memoryRegex = Regex("mem\\[([0-9]+)\\] = ([0-9]+)")
+        val memoryRegex = Regex("mem\\[([0-9]+)\\] = ([0-9]+)")
 
         fun parse(input: List<String>): List<MemoryInput> {
             val indexes = input
@@ -44,5 +37,4 @@ class MemoryHandler {
         }
 
     }
-
 }

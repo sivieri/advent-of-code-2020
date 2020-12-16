@@ -18,10 +18,26 @@ class MemoryHandlerTest {
         """.trimIndent()
             .split("\n")
         val blocks = MemoryHandler.parse(input)
-        val memoryHandler = MemoryHandler()
+        val memoryHandler = MemoryHandlerV1()
         blocks.forEach { memoryHandler.executeInput(it) }
         val res = memoryHandler.sum()
         Assert.assertEquals(165, res)
+    }
+
+    @Test
+    fun `02 memory test V2`() {
+        val input = """
+            mask = 000000000000000000000000000000X1001X
+            mem[42] = 100
+            mask = 00000000000000000000000000000000X0XX
+            mem[26] = 1
+        """.trimIndent()
+            .split("\n")
+        val blocks = MemoryHandler.parse(input)
+        val memoryHandler = MemoryHandlerV2()
+        blocks.forEach { memoryHandler.executeInput(it) }
+        val res = memoryHandler.sum()
+        Assert.assertEquals(208, res)
     }
 
 }
