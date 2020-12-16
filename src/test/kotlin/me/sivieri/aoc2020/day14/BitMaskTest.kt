@@ -15,6 +15,7 @@ class BitMaskTest {
             Mask: 0100101
             Value: 0000100
             ValueAndMask: 0000100
+            ValueAndMaskIgnoreZero: 0000100
         """.trimIndent()
         Assert.assertEquals(exp, mask.toString())
     }
