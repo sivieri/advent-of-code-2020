@@ -1,6 +1,6 @@
 package me.sivieri.aoc2020.day15
 
-object Main1 {
+object Main2 {
 
     @JvmStatic
     fun main(args: Array<String>) {
@@ -8,7 +8,7 @@ object Main1 {
             .split(",")
             .map { it.toInt() }
         val game = Game()
-        val res = game.play(data, 2020)
+        val res = game.play(data, 30_000_000)
         println(res)
     }
 

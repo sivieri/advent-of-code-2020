@@ -4,7 +4,10 @@ class Game {
 
     private val numbers: MutableMap<Int, Pair<Int, Int>> = mutableMapOf()
 
-    fun play(values: List<Int>): Int {
+    fun play(
+        values: List<Int>,
+        maxRound: Int
+    ): Int {
         numbers.clear()
         return (1..maxRound).fold(-1) { acc, i ->
             if (i - 1 < values.size) {
@@ -36,7 +39,6 @@ class Game {
     }
 
     companion object {
-        private const val maxRound = 2020
         private const val startingNumber = 0
     }
 

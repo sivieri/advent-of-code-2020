@@ -14,7 +14,7 @@ class GameTest {
             .split(",")
             .map { it.toInt() }
         val game = Game()
-        val res = game.play(input)
+        val res = game.play(input, 2020)
         Assert.assertEquals(436, res)
     }
 
@@ -24,7 +24,7 @@ class GameTest {
             .split(",")
             .map { it.toInt() }
         val game = Game()
-        val res = game.play(input)
+        val res = game.play(input, 2020)
         Assert.assertEquals(1, res)
     }
 
@@ -34,7 +34,7 @@ class GameTest {
             .split(",")
             .map { it.toInt() }
         val game = Game()
-        val res = game.play(input)
+        val res = game.play(input, 2020)
         Assert.assertEquals(10, res)
     }
 
@@ -44,7 +44,7 @@ class GameTest {
             .split(",")
             .map { it.toInt() }
         val game = Game()
-        val res = game.play(input)
+        val res = game.play(input, 2020)
         Assert.assertEquals(27, res)
     }
 
@@ -54,7 +54,7 @@ class GameTest {
             .split(",")
             .map { it.toInt() }
         val game = Game()
-        val res = game.play(input)
+        val res = game.play(input, 2020)
         Assert.assertEquals(78, res)
     }
 
@@ -64,7 +64,7 @@ class GameTest {
             .split(",")
             .map { it.toInt() }
         val game = Game()
-        val res = game.play(input)
+        val res = game.play(input, 2020)
         Assert.assertEquals(438, res)
     }
 
@@ -74,7 +74,7 @@ class GameTest {
             .split(",")
             .map { it.toInt() }
         val game = Game()
-        val res = game.play(input)
+        val res = game.play(input, 2020)
         Assert.assertEquals(1836, res)
     }
 
