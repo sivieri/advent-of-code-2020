@@ -4,7 +4,7 @@ import java.lang.IllegalArgumentException
 
 abstract class MemoryHandler {
 
-    protected val memory: MutableMap<Int, Long> = mutableMapOf()
+    protected val memory: MutableMap<Long, Long> = mutableMapOf()
 
     abstract fun executeInput(input: MemoryInput)
 
@@ -30,7 +30,7 @@ abstract class MemoryHandler {
                         val groups = memoryRegex
                             .matchEntire(it)
                             ?.groups ?: throw IllegalArgumentException("Wrong input: $it")
-                        groups[1]!!.value.toInt() to groups[2]!!.value.toLong()
+                        groups[1]!!.value.toLong() to groups[2]!!.value.toLong()
                     }
                 MemoryInput(bitMask, values)
             }

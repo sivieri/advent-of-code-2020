@@ -2,27 +2,28 @@ package me.sivieri.aoc2020.day14
 
 import me.sivieri.aoc2020.LongRepresentation
 import me.sivieri.aoc2020.toBinaryString
-import me.sivieri.aoc2020.toList
 import me.sivieri.aoc2020.toLong
-import java.math.BigInteger
 import java.util.*
 
 class BitMask(
-    s: String
+    val maskString: String
 ) {
 
-    private val maskLength: Int = s.length
+    private val maskLength: Int = maskString.length
     private val mask: BitSet = BitSet(maskLength)
     private val value: BitSet = BitSet(maskLength)
     private val valueAndMask: BitSet
+    private val valueAndMaskIgnoreZero: BitSet
 
     init {
-        parseString(s) { index, c ->
-            if (c[index] != unused) mask.set(index)
+        parseString(maskString) { index, c ->
+            if (c[index] != floating) mask.set(index)
             if (c[index] == '1') value.set(index)
         }
         valueAndMask = (value.clone() as BitSet)
         valueAndMask.and(mask)
+        valueAndMaskIgnoreZero = (value.clone() as BitSet)
+        valueAndMaskIgnoreZero.and(value)
     }
 
     fun apply(number: Long): Long {
@@ -33,6 +34,17 @@ class BitMask(
         }
         numberBits.andNot(mask)
         numberBits.or(valueAndMask)
+        return numberBits.toLong(maskLength)
+    }
+
+    fun applyIgnoreZero(number: Long): Long {
+        val numberString = LongRepresentation.toStringRepresentation(number)
+        val numberBits = BitSet(maskLength)
+        parseString(numberString) { index, c ->
+            if (c[index] == '1') numberBits.set(index)
+        }
+        numberBits.andNot(value)
+        numberBits.or(valueAndMaskIgnoreZero)
         return numberBits.toLong(maskLength)
     }
 
@@ -59,11 +71,12 @@ class BitMask(
             Mask: ${mask.toBinaryString(maskLength)}
             Value: ${value.toBinaryString(maskLength)}
             ValueAndMask: ${valueAndMask.toBinaryString(maskLength)}
+            ValueAndMaskIgnoreZero: ${valueAndMaskIgnoreZero.toBinaryString(maskLength)}
         """.trimIndent()
     }
 
     companion object {
-        private const val unused = 'X'
+        const val floating = 'X'
 
         fun parseString(
             s: String,
