@@ -9,7 +9,7 @@ object Main1 {
         val data = Utils.readInput(16)
         val (scanner, _, tickets) = Scanner.parse(data)
         val res = tickets
-            .map { scanner.validate(it) }
+            .map { scanner.validateWithSum(it) }
             .sum()
         println(res)
     }

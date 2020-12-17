@@ -27,9 +27,46 @@ class ScannerTest {
             .split("\n")
         val (scanner, _, tickets) = Scanner.parse(input)
         val res = tickets
-            .map { scanner.validate(it) }
+            .map { scanner.validateWithSum(it) }
             .sum()
         Assert.assertEquals(71, res)
+    }
+
+    @Test
+    fun `02 scan fields position test`() {
+        val input = """
+            class: 0-1 or 4-19
+            row: 0-5 or 8-19
+            seat: 0-13 or 16-19
+            
+            your ticket:
+            11,12,13
+            
+            nearby tickets:
+            3,9,18
+            15,1,5
+            5,14,9
+        """.trimIndent()
+            .split("\n")
+        val (scanner, myTicket, tickets) = Scanner.parse(input)
+        val validTickets = tickets
+            .filter { scanner.validate(it) }
+        scanner.findFieldsPosition(validTickets)
+        val res = scanner.findSpecificFieldsValues(myTicket, listOf("class", "row"))
+        Assert.assertEquals(132L, res)
+    }
+
+    @Test
+    fun `03 find specific fields sum`() {
+        val scanner = Scanner(
+            listOf(
+                ValueClass("class", listOf(0..1, 4..19), 1),
+                ValueClass("row", listOf(0..5, 8..19), 0),
+                ValueClass("seat", listOf(0..13, 16..19), 2)
+            )
+        )
+        val res = scanner.findSpecificFieldsValues(Ticket(listOf(11, 12, 13)), listOf("class", "row"))
+        Assert.assertEquals(132L, res)
     }
 
 }

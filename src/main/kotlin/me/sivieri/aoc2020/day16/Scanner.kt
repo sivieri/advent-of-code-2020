@@ -1,19 +1,37 @@
 package me.sivieri.aoc2020.day16
 
-class Scanner(private val classes: Map<String, List<IntRange>>) {
+import me.sivieri.aoc2020.multiplyBy
 
-    private val ranges: List<IntRange> = classes.values.flatten()
+class Scanner(private val classes: List<ValueClass>) {
 
-    fun validate(ticket: Ticket): Int =
-        ticket
-            .values
-            .filter { value ->
-                !ranges
-                    .any { range ->
-                        range.contains(value)
-                    }
-            }
+    private val ranges: List<IntRange> = classes
+        .flatMap { it.ranges }
+
+    fun validateWithSum(ticket: Ticket): Int =
+        filterTicketValues(ticket)
             .sum()
+
+    fun validate(ticket: Ticket): Boolean =
+        filterTicketValues(ticket).isEmpty()
+
+    private fun filterTicketValues(ticket: Ticket) = ticket
+        .values
+        .filter { value ->
+            !ranges
+                .any { range ->
+                    range.contains(value)
+                }
+        }
+
+    fun findFieldsPosition(validTickets: List<Ticket>) {
+        TODO("Not yet implemented")
+    }
+
+    fun findSpecificFieldsValues(myTicket: Ticket, classNames: List<String>): Long =
+        classes
+            .filter { c -> classNames.any { c.name.startsWith(it) } }
+            .map { it.positionInTicket!! }
+            .multiplyBy { myTicket.values[it].toLong() }
 
     companion object {
         private const val myTicketLabel = "your ticket:"
@@ -36,12 +54,14 @@ class Scanner(private val classes: Map<String, List<IntRange>>) {
                     val groups = classRegex
                         .matchEntire(it)
                         ?.groups ?: throw IllegalArgumentException("Wrong input: $it")
-                    groups[1]!!.value to listOf(
-                        groups[2]!!.value.toInt()..groups[3]!!.value.toInt(),
-                        groups[4]!!.value.toInt()..groups[5]!!.value.toInt()
+                    ValueClass(
+                        groups[1]!!.value,
+                        listOf(
+                            groups[2]!!.value.toInt()..groups[3]!!.value.toInt(),
+                            groups[4]!!.value.toInt()..groups[5]!!.value.toInt()
+                        )
                     )
                 }
-                .toMap()
             val scanner = Scanner(classes)
             return Triple(scanner, myTicket, otherTickets)
         }
