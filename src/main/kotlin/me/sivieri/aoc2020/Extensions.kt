@@ -44,3 +44,10 @@ internal fun BitSet.toLong(size: Int): Long {
     }
     return BigInteger(buffer.toString(), 2).longValueExact()
 }
+
+internal fun <K, V> Map<K, V>.find(f: (K) -> Boolean): V? {
+    val key = this
+        .keys
+        .find(f)
+    return this[key]
+}

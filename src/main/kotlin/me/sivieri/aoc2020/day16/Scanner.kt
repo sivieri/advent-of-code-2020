@@ -1,8 +1,9 @@
 package me.sivieri.aoc2020.day16
 
+import me.sivieri.aoc2020.find
 import me.sivieri.aoc2020.multiplyBy
 
-class Scanner(private val classes: List<ValueClass>) {
+class Scanner(private var classes: List<ValueClass>) {
 
     private val ranges: List<IntRange> = classes
         .flatMap { it.ranges }
@@ -24,7 +25,48 @@ class Scanner(private val classes: List<ValueClass>) {
         }
 
     fun findFieldsPosition(validTickets: List<Ticket>) {
-        TODO("Not yet implemented")
+        val possibleClasses = assignPossibleClasses(validTickets)
+        while (possibleClasses.any { it.value.size != 1 }) {
+            val singlePositions = possibleClasses
+                .filter { it.value.size == 1 }
+                .map { it.value.first() }
+            val keys = possibleClasses
+                .keys
+                .toSet()
+            keys.forEach { key ->
+                val currentValues = possibleClasses[key]!!
+                if (currentValues.size != 1) {
+                    possibleClasses[key] = currentValues
+                        .subtract(singlePositions)
+                        .toList()
+                }
+            }
+        }
+        possibleClasses
+            .let { assigned ->
+                classes = classes.map { c ->
+                    val position = assigned
+                        .find { it.name == c.name }!!
+                        .first()
+                    c.copy(positionInTicket = position)
+                }
+            }
+    }
+
+    private fun assignPossibleClasses(tickets: List<Ticket>): MutableMap<ValueClass, List<Int>> {
+        val length = tickets.first().values.size
+        return classes
+            .map { c ->
+                val positions = (0 until length).filter { position ->
+                    tickets
+                        .all { ticket ->
+                            c.ranges.any { r -> r.contains(ticket.values[position]) }
+                        }
+                }
+                c to positions
+            }
+            .toMap()
+            .toMutableMap()
     }
 
     fun findSpecificFieldsValues(myTicket: Ticket, classNames: List<String>): Long =
