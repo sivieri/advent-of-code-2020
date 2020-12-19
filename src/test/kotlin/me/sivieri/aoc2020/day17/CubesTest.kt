@@ -9,7 +9,41 @@ import org.junit.runners.MethodSorters
 class CubesTest {
 
     @Test
-    fun `01 active cubes test`() {
+    fun `01 string representation`() {
+        val input = """
+            .#.
+            ..#
+            ###
+        """.trimIndent()
+            .split("\n")
+            .map { it.toCharArray() }
+        val cubes = Cubes(input)
+        val exp = """
+            z = 0
+            .#.
+            ..#
+            ###
+        """.trimIndent()
+        Assert.assertEquals(exp, cubes.toGridString())
+    }
+
+    @Test
+    fun `02 active cubes test`() {
+        val input = """
+            .#.
+            ..#
+            ###
+        """.trimIndent()
+            .split("\n")
+            .map { it.toCharArray() }
+        val cubes = Cubes(input)
+        cubes.performIterations(1)
+        val res = cubes.countActive()
+        Assert.assertEquals(11, res)
+    }
+
+    @Test
+    fun `03 active cubes test`() {
         val input = """
             .#.
             ..#

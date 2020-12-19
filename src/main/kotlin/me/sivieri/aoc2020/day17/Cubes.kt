@@ -9,31 +9,76 @@ class Cubes(input: List<CharArray>) {
             }
         }
         .toMap()
+    private var minX = grid.keys.minByOrNull { it.x }!!.x
+    private var maxX = grid.keys.maxByOrNull { it.x }!!.x
+    private var minY = grid.keys.minByOrNull { it.y }!!.y
+    private var maxY = grid.keys.maxByOrNull { it.y }!!.y
+    private var minZ = grid.keys.minByOrNull { it.z }!!.z
+    private var maxZ = grid.keys.maxByOrNull { it.z }!!.z
 
     fun performIterations(iterations: Int) {
-        (0 until iterations).forEach { _ -> performIteration() }
+        println(toGridString())
+        (1..iterations).forEach { i ->
+            println("Iteration $i")
+            performIteration()
+            println(toGridString())
+        }
     }
 
     private fun performIteration() {
         val newGrid = mutableMapOf<Coordinates, Char>()
-        grid.forEach { cell ->
-            val neighbors = getNeighbors(cell)
-            val activeNumber = neighbors.count { it.value == active }
-            if (cell.value == active && activeNumber >= 2 && activeNumber <= 3) newGrid[cell.key] = active
-            else if (cell.value == active && (activeNumber < 2 || activeNumber > 3)) newGrid[cell.key] = inactive
-            else if (cell.value == inactive && activeNumber == 3) newGrid[cell.key] = active
-            else newGrid[cell.key] = inactive
+        minX--
+        minY--
+        minZ--
+        maxX++
+        maxY++
+        maxZ++
+        (minX..maxX).flatMap { x ->
+            (minY..maxY).flatMap { y ->
+                (minZ..maxZ).map { z ->
+                    val coordinates = Coordinates(x, y, z)
+                    val value = grid.getOrDefault(coordinates, inactive)
+                    applyAlgorithm(coordinates, value, newGrid)
+                }
+            }
         }
-        // TODO expand to neighbors not in list
         grid = newGrid
     }
 
-    private fun getNeighbors(cell: Map.Entry<Coordinates, Char>): List<Map.Entry<Coordinates, Char>> {
-        TODO()
+    private fun applyAlgorithm(
+        coordinates: Coordinates,
+        value: Char,
+        newGrid: MutableMap<Coordinates, Char>
+    ) {
+        val neighbors = getNeighbors(Pair(coordinates, value))
+        val activeNumber = neighbors.count { it.second == active }
+        if (value == active && activeNumber >= 2 && activeNumber <= 3) newGrid[coordinates] = active
+        else if (value == active && (activeNumber < 2 || activeNumber > 3)) newGrid[coordinates] = inactive
+        else if (value == inactive && activeNumber == 3) newGrid[coordinates] = active
+        else newGrid[coordinates] = inactive
     }
+
+    private fun getNeighbors(cell: Pair<Coordinates, Char>): List<Pair<Coordinates, Char>> =
+        cell
+            .first
+            .getNeighbors()
+            .map { c ->
+                Pair(c, grid.getOrDefault(c,inactive))
+            }
 
     fun countActive(): Int =
         grid.count { it.value == active }
+
+    fun toGridString(): String {
+        return (minZ..maxZ).joinToString("\n\n") { z ->
+            "z = $z\n" + (minX..maxX).joinToString("\n") { x ->
+                (minY..maxY).joinToString("") { y ->
+                    val coordinates = Coordinates(x, y, z)
+                    grid[coordinates]!!.toString()
+                }
+            }
+        }
+    }
 
     companion object {
         private const val inactive = '.'
