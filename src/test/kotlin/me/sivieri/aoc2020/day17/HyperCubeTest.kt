@@ -6,7 +6,7 @@ import org.junit.Test
 import org.junit.runners.MethodSorters
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-class CubesTest {
+class HyperCubeTest {
 
     @Test
     fun `01 string representation`() {
@@ -17,9 +17,9 @@ class CubesTest {
         """.trimIndent()
             .split("\n")
             .map { it.toCharArray() }
-        val cubes = Cubes(input)
+        val cubes = HyperCube(input)
         val exp = """
-            z = 0
+            z = 0, w = 0
             .#.
             ..#
             ###
@@ -36,25 +36,10 @@ class CubesTest {
         """.trimIndent()
             .split("\n")
             .map { it.toCharArray() }
-        val cubes = Cubes(input)
-        cubes.performIterations(1)
-        val res = cubes.countActive()
-        Assert.assertEquals(11, res)
-    }
-
-    @Test
-    fun `03 active cubes test`() {
-        val input = """
-            .#.
-            ..#
-            ###
-        """.trimIndent()
-            .split("\n")
-            .map { it.toCharArray() }
-        val cubes = Cubes(input)
+        val cubes = HyperCube(input)
         cubes.performIterations(6)
         val res = cubes.countActive()
-        Assert.assertEquals(112, res)
+        Assert.assertEquals(848, res)
     }
 
 }

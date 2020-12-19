@@ -1,11 +1,11 @@
 package me.sivieri.aoc2020.day17
 
-class Cubes(input: List<CharArray>) {
+class HyperCube(input: List<CharArray>) {
 
-    private var grid: Map<Coordinates, Char> = input
+    private var grid: Map<Coordinates4D, Char> = input
         .indices.flatMap { x ->
             input[x].indices.map { y ->
-                Coordinates(x, y, 0) to input[x][y]
+                Coordinates4D(x, y, 0, 0) to input[x][y]
             }
         }
         .toMap()
@@ -15,6 +15,8 @@ class Cubes(input: List<CharArray>) {
     private var maxY = grid.keys.maxByOrNull { it.y }!!.y
     private var minZ = grid.keys.minByOrNull { it.z }!!.z
     private var maxZ = grid.keys.maxByOrNull { it.z }!!.z
+    private var minW = grid.keys.minByOrNull { it.w }!!.w
+    private var maxW = grid.keys.maxByOrNull { it.w }!!.w
 
     fun performIterations(iterations: Int) {
         println(toGridString())
@@ -26,19 +28,23 @@ class Cubes(input: List<CharArray>) {
     }
 
     private fun performIteration() {
-        val newGrid = mutableMapOf<Coordinates, Char>()
+        val newGrid = mutableMapOf<Coordinates4D, Char>()
         minX--
         minY--
         minZ--
+        minW--
         maxX++
         maxY++
         maxZ++
+        maxW++
         (minX..maxX).flatMap { x ->
             (minY..maxY).flatMap { y ->
                 (minZ..maxZ).map { z ->
-                    val coordinates = Coordinates(x, y, z)
-                    val value = grid.getOrDefault(coordinates, inactive)
-                    applyAlgorithm(coordinates, value, newGrid)
+                    (minW..maxW).map { w ->
+                        val coordinates = Coordinates4D(x, y, z, w)
+                        val value = grid.getOrDefault(coordinates, inactive)
+                        applyAlgorithm(coordinates, value, newGrid)
+                    }
                 }
             }
         }
@@ -46,9 +52,9 @@ class Cubes(input: List<CharArray>) {
     }
 
     private fun applyAlgorithm(
-        coordinates: Coordinates,
+        coordinates: Coordinates4D,
         value: Char,
-        newGrid: MutableMap<Coordinates, Char>
+        newGrid: MutableMap<Coordinates4D, Char>
     ) {
         val neighbors = getNeighbors(Pair(coordinates, value))
         val activeNumber = neighbors.count { it.second == active }
@@ -58,7 +64,7 @@ class Cubes(input: List<CharArray>) {
         else newGrid[coordinates] = inactive
     }
 
-    private fun getNeighbors(cell: Pair<Coordinates, Char>): List<Pair<Coordinates, Char>> =
+    private fun getNeighbors(cell: Pair<Coordinates4D, Char>): List<Pair<Coordinates4D, Char>> =
         cell
             .first
             .getNeighbors()
@@ -70,14 +76,16 @@ class Cubes(input: List<CharArray>) {
         grid.count { it.value == active }
 
     fun toGridString(): String {
-        return (minZ..maxZ).joinToString("\n\n") { z ->
-            "z = $z\n" + (minX..maxX).joinToString("\n") { x ->
-                (minY..maxY).joinToString("") { y ->
-                    val coordinates = Coordinates(x, y, z)
-                    grid[coordinates]!!.toString()
+        return (minZ..maxZ)
+            .zip(minW..maxW)
+            .joinToString("\n\n") { (z, w) ->
+                "z = $z, w = $w\n" + (minX..maxX).joinToString("\n") { x ->
+                    (minY..maxY).joinToString("") { y ->
+                        val coordinates = Coordinates4D(x, y, z, w)
+                        grid[coordinates]!!.toString()
+                    }
                 }
             }
-        }
     }
 
     companion object {
