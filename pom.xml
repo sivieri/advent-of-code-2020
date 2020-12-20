@@ -59,6 +59,13 @@
                         <goals>
                             <goal>antlr4</goal>
                         </goals>
+                        <configuration>
+                            <arguments>
+                                <argument>-package</argument>
+                                <argument>me.sivieri.aoc2020.day19.grammars</argument>
+                            </arguments>
+                            <outputDirectory>${basedir}/src/main/java/me/sivieri/aoc2020/day19/grammars</outputDirectory>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
