@@ -66,6 +66,7 @@ class Parser(
             true
         }
         catch (e: ParsingException) {
+            println("$input: ${e.message}")
             false
         }
 

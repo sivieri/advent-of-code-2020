@@ -10,8 +10,8 @@ object Main2 {
         val parser = Parser(
             data,
             listOf(
-                "p8: p30 | p30 p8;",
-                "p11: p30 p29 | p30 p11 p29;"
+                "p8: p42 | p42 p8;",
+                "p11: p42 p31 | p42 p11 p31;"
             )
         )
         val res = parser.validateAll()
