@@ -51,3 +51,9 @@ internal fun <K, V> Map<K, V>.find(f: (K) -> Boolean): V? {
         .find(f)
     return this[key]
 }
+
+internal fun <T> List<T>.indexOfAll(f: (T) -> Boolean): List<Int> =
+    this
+        .mapIndexed { index, t -> Pair(index, t) }
+        .filter { f(it.second) }
+        .map { it.first }
