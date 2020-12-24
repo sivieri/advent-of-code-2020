@@ -1,5 +1,6 @@
 package me.sivieri.aoc2020
 
+import java.lang.IllegalArgumentException
 import java.math.BigInteger
 import java.util.*
 import java.util.stream.Stream
@@ -57,3 +58,11 @@ internal fun <T> List<T>.indexOfAll(f: (T) -> Boolean): List<Int> =
         .mapIndexed { index, t -> Pair(index, t) }
         .filter { f(it.second) }
         .map { it.first }
+
+internal fun <T> List<T>.safeSubList(start: Int, end: Int): List<T> {
+    if (start < 0 || end < 0) throw IllegalArgumentException("$start < 0 || $end < 0")
+    if (start > end) throw IllegalArgumentException("$start > $end")
+    if (start >= this.size) return emptyList()
+    if (end > this.size) return this.subList(start, this.size)
+    return this.subList(start, end)
+}
