@@ -38,4 +38,18 @@ class BookTest {
         Assert.assertEquals(5, res)
     }
 
+    @Test
+    fun `03 find bad ingredients test`() {
+        val input = """
+            mxmxvkd kfcds sqjhc nhms (contains dairy, fish)
+            trh fvjkl sbzzf mxmxvkd (contains dairy)
+            sqjhc fvjkl (contains soy)
+            sqjhc mxmxvkd sbzzf (contains fish)
+        """.trimIndent()
+            .split("\n")
+        val book = Book(input)
+        val res = book.findBadIngredientsString()
+        Assert.assertEquals("mxmxvkd,sqjhc,fvjkl", res)
+    }
+
 }

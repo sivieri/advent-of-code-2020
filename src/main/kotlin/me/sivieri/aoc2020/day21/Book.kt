@@ -9,6 +9,17 @@ class Book(input: List<String>) {
         val allIngredients = recipes
             .flatMap { it.ingredients }
             .distinct()
+        val pairs = findPairs()
+        return allIngredients.minus(pairs.values)
+    }
+
+    fun findBadIngredientsString(): String =
+        findPairs()
+            .toSortedMap()
+            .values
+            .joinToString(",")
+
+    private fun findPairs(): Map<String, String> {
         val allAllergens = recipes
             .flatMap { it.allergens }
             .distinct()
@@ -38,7 +49,7 @@ class Book(input: List<String>) {
                 keys.forEach { allergensRecipes[it] = allergensRecipes[it]!!.minus(ingredient) }
             }
         }
-        return allIngredients.minus(res.values)
+        return res.toMap()
     }
 
     fun countIngredients(ingredients: List<String>): Int =
