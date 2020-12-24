@@ -4,7 +4,7 @@ import java.util.*
 
 data class Player(
     val id: Int,
-    private var cards: Queue<Int>
+    var cards: Queue<Int>
 ) {
 
     fun play(): Int? = cards.peek()
@@ -19,13 +19,12 @@ data class Player(
         cards.poll()
     }
 
-    fun calculatePoints(): Long {
+    fun calculatePoints(): Int {
         val size = cards.size
         return (size downTo 1)
-            .map { i ->
-                (cards.poll() * i).toLong()
+            .sumBy { i ->
+                (cards.poll() * i)
             }
-            .sum()
     }
 
 }
