@@ -1,8 +1,5 @@
 package me.sivieri.aoc2020.day21
 
-import com.google.common.collect.Sets
-
-@Suppress("UnstableApiUsage")
 class Book(input: List<String>) {
 
     private val recipes: List<Recipe> = input
@@ -15,46 +12,33 @@ class Book(input: List<String>) {
         val allAllergens = recipes
             .flatMap { it.allergens }
             .distinct()
-        val allPairs = Sets
-            .combinations(recipes.toSet(), 2)
-            .map {
-                val l = it.toList()
-                Pair(l[0], l[1])
-            }
-        val commonPairs = allPairs.map {
-                val commonIngredients = it.first.ingredients.intersect(it.second.ingredients)
-                val commonAllergens = it.first.allergens.intersect(it.second.allergens)
-                Pair(commonIngredients, commonAllergens)
-            }
         val res = mutableMapOf<String, String>()
-        var newPairs = commonPairs
-        while (newPairs.any { it.first.size == 1 && it.second.size == 1 }) {
-            newPairs
-                .filter { it.first.size == 1 && it.second.size == 1 }
-                .forEach { res[it.first.first()] = it.second.first() }
-            val removedPairs = newPairs
-                .map {
-                    val newCommonIngredients = it
-                        .first
-                        .minus(res.keys)
-                    val newCommonAllergens = it
-                        .second
-                        .minus(res.values)
-                    Pair(newCommonIngredients, newCommonAllergens)
-                }
-            newPairs = removedPairs
-        }
-        allAllergens
-            .minus(res.values)
-            .forEach { allergen ->
-                val recipes = recipes
+        val allergensRecipes = allAllergens
+            .map { allergen ->
+                val lists = recipes
                     .filter { it.allergens.contains(allergen) }
-                    .flatMap { it.ingredients }
-                    .minus(res.keys)
-                if (recipes.size != 1) println("Unable to establish something for $allergen (${recipes.size})")
-                else res[recipes.first()] = allergen
+                    .map { it.ingredients }
+                val intersection = if (lists.size == 1) lists.first()
+                else lists
+                    .subList(1, lists.size)
+                    .fold(lists.first()) { acc, list ->
+                        acc.intersect(list)
+                    }
+                allergen to intersection
             }
-        return allIngredients.minus(res.keys)
+            .toMap()
+            .toMutableMap()
+        while (res.keys.size != allAllergens.size) {
+            allergensRecipes.forEach { (allergen, ingredients) ->
+                if (ingredients.size == 1) res[allergen] = ingredients.first()
+            }
+            res.keys.forEach { allergensRecipes.remove(it) }
+            res.values.forEach { ingredient ->
+                val keys = allergensRecipes.filter { it.value.contains(ingredient) }.keys
+                keys.forEach { allergensRecipes[it] = allergensRecipes[it]!!.minus(ingredient) }
+            }
+        }
+        return allIngredients.minus(res.values)
     }
 
     fun countIngredients(ingredients: List<String>): Int =

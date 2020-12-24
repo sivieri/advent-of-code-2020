@@ -1,8 +1,8 @@
 package me.sivieri.aoc2020.day21
 
 data class Recipe(
-    val ingredients: List<String>,
-    val allergens: List<String>
+    val ingredients: Set<String>,
+    val allergens: Set<String>
 ) {
 
     companion object {
@@ -12,11 +12,13 @@ data class Recipe(
             val ingredients = parts[0]
                 .trim()
                 .split(" ")
-            val allergens = if (parts.size == 1) emptyList()
+                .toSet()
+            val allergens = if (parts.size == 1) emptySet()
             else parts[1]
                 .trim()
                 .trim(')')
                 .split(", ")
+                .toSet()
             return Recipe(ingredients, allergens)
         }
 
