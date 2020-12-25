@@ -12,7 +12,8 @@ class CupsTest {
     fun `01 10 iterations`() {
         val input = "389125467"
         val cups = Cups(input)
-        val res = cups.performIterations(10)
+        cups.performIterations(10)
+        val res = cups.getFullString()
         Assert.assertEquals("92658374", res)
     }
 
@@ -20,7 +21,8 @@ class CupsTest {
     fun `02 100 iterations`() {
         val input = "389125467"
         val cups = Cups(input)
-        val res = cups.performIterations(100)
+        cups.performIterations(100)
+        val res = cups.getFullString()
         Assert.assertEquals("67384529", res)
     }
 

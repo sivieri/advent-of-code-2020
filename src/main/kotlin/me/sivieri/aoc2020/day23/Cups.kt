@@ -2,15 +2,27 @@ package me.sivieri.aoc2020.day23
 
 import me.sivieri.aoc2020.safeSubList
 
-class Cups(input: String) {
+class Cups(
+    input: String,
+    million: Boolean = false
+) {
 
     private var cups: List<Int> = input
         .toCharArray()
         .map { it.toString().toInt() }
+        .let {
+            if (million) {
+                it.plus(
+                    (it.maxOrNull()!! + 1)..1_000_000
+                )
+            }
+            else it
+        }
     private var current = 0
 
-    fun performIterations(iterations: Int): String {
+    fun performIterations(iterations: Int) {
         for (i in 1..iterations) {
+            if (i % 100 == 0) println("Iteration $i")
             val sz = cups.size
             val c = cups[current]
             val l = cups.toMutableList()
@@ -41,11 +53,19 @@ class Cups(input: String) {
             cups = l3
             current = (current + 1) % sz
         }
+    }
+
+    fun getFullString(): String {
         val idx = cups.indexOf(1)
         return cups
             .safeSubList(idx + 1, cups.size)
             .plus(cups.safeSubList(0, idx))
             .joinToString("")
+    }
+
+    fun getTwoCups(): Long {
+        val idx = cups.indexOf(1)
+        return cups[idx + 1].toLong() * cups[idx + 2].toLong()
     }
 
     override fun toString(): String {
