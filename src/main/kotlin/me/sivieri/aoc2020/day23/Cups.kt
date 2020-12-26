@@ -31,8 +31,6 @@ class Cups(
         for (i in 1..iterations) {
             if (i % 100 == 0) println("Iteration $i")
             val sz = cups.size
-            System.arraycopy(zeros, 0, support, 0, sz)
-            System.arraycopy(zeros, 0, support2, 0, sz)
             cups.shift(support2, 0 - current)
             val c = support2[0]
             val v1 = support2[(1) % sz]
@@ -51,6 +49,13 @@ class Cups(
                 support,
                 1,
                 sz - 4
+            )
+            safeArrayCopy(
+                zeros,
+                0,
+                support,
+                sz - 3,
+                3
             )
             var d = c - 1
             while (d <= 0 || d == v1 || d == v2 || d == v3) {
@@ -75,33 +80,8 @@ class Cups(
                 idx + 4,
                 sz - idx - 4
             )
-            if (support2[0] != c) {
-                val l2idx = support2.indexOf(c)
-                safeArrayCopy(
-                    support2,
-                    l2idx,
-                    support,
-                    0,
-                    sz - l2idx
-                )
-                safeArrayCopy(
-                    support2,
-                    0,
-                    support,
-                    sz - l2idx,
-                    l2idx
-                )
-            }
-            else {
-                safeArrayCopy(
-                    support2,
-                    0,
-                    support,
-                    0,
-                    sz
-                )
-            }
-            support.shift(cups, current)
+            val idx2 = support2.indexOf(c)
+            support2.shift(cups, current - idx2)
             current = (current + 1) % sz
         }
     }
