@@ -1,13 +1,15 @@
 package me.sivieri.aoc2020.day23
 
+import me.sivieri.aoc2020.safeArrayCopy
 import me.sivieri.aoc2020.safeSubList
+import me.sivieri.aoc2020.shift
 
 class Cups(
     input: String,
     million: Boolean = false
 ) {
 
-    private var cups: List<Int> = input
+    private val cups: Array<Int> = input
         .toCharArray()
         .map { it.toString().toInt() }
         .let {
@@ -18,39 +20,88 @@ class Cups(
             }
             else it
         }
+        .toTypedArray()
+    private val support: Array<Int> = Array(cups.size) { 0 }
+    private val support2: Array<Int> = Array(cups.size) { 0 }
+    private val zeros: Array<Int> = Array(cups.size) { 0 }
+    private val max = cups.maxOrNull()!!
     private var current = 0
 
     fun performIterations(iterations: Int) {
         for (i in 1..iterations) {
             if (i % 100 == 0) println("Iteration $i")
             val sz = cups.size
-            val c = cups[current]
-            val l = cups.toMutableList()
-            val extracted = listOf(
-                l[(current + 1) % sz],
-                l[(current + 2) % sz],
-                l[(current + 3) % sz],
+            System.arraycopy(zeros, 0, support, 0, sz)
+            System.arraycopy(zeros, 0, support2, 0, sz)
+            cups.shift(support2, 0 - current)
+            val c = support2[0]
+            val v1 = support2[(1) % sz]
+            val v2 = support2[(2) % sz]
+            val v3 = support2[(3) % sz]
+            safeArrayCopy(
+                support2,
+                0,
+                support,
+                0,
+                1
             )
-            l.removeAll(extracted)
+            safeArrayCopy(
+                support2,
+                4,
+                support,
+                1,
+                sz - 4
+            )
             var d = c - 1
-            while (!l.contains(d)) {
-                d = if (d - 1 < 0) cups.maxOrNull()!!
+            while (d <= 0 || d == v1 || d == v2 || d == v3) {
+                d = if (d - 1 <= 0) max
                 else d - 1
             }
-            val idx = l.indexOf(d)
-            val l2 = l
-                .safeSubList(0, idx + 1)
-                .plus(extracted)
-                .plus(l.safeSubList(idx + 1, sz))
-            val l3 = if (l2[current] != c) {
-                val l2idx = l2.indexOf(c)
-                l2
-                    .safeSubList(l2idx - current, l2idx + 1)
-                    .plus(l2.safeSubList(l2idx + 1, sz))
-                    .plus(l2.safeSubList(0, l2idx - current))
+            val idx = support.indexOf(d)
+            safeArrayCopy(
+                support,
+                0,
+                support2,
+                0,
+                idx + 1
+            )
+            support2[idx + 1] = v1
+            support2[idx + 2] = v2
+            support2[idx + 3] = v3
+            safeArrayCopy(
+                support,
+                idx + 1,
+                support2,
+                idx + 4,
+                sz - idx - 4
+            )
+            if (support2[0] != c) {
+                val l2idx = support2.indexOf(c)
+                safeArrayCopy(
+                    support2,
+                    l2idx,
+                    support,
+                    0,
+                    sz - l2idx
+                )
+                safeArrayCopy(
+                    support2,
+                    0,
+                    support,
+                    sz - l2idx,
+                    l2idx
+                )
             }
-            else l2
-            cups = l3
+            else {
+                safeArrayCopy(
+                    support2,
+                    0,
+                    support,
+                    0,
+                    sz
+                )
+            }
+            support.shift(cups, current)
             current = (current + 1) % sz
         }
     }
@@ -58,8 +109,9 @@ class Cups(
     fun getFullString(): String {
         val idx = cups.indexOf(1)
         return cups
+            .toList()
             .safeSubList(idx + 1, cups.size)
-            .plus(cups.safeSubList(0, idx))
+            .plus(cups.toList().safeSubList(0, idx))
             .joinToString("")
     }
 
@@ -74,4 +126,5 @@ class Cups(
             else it.toString()
         }
     }
+
 }

@@ -4,6 +4,7 @@ import java.lang.IllegalArgumentException
 import java.math.BigInteger
 import java.util.*
 import java.util.stream.Stream
+import kotlin.math.abs
 
 internal fun <T> Stream<T>.toList(): List<T> =
     this
@@ -65,4 +66,65 @@ internal fun <T> List<T>.safeSubList(start: Int, end: Int): List<T> {
     if (start >= this.size) return emptyList()
     if (end > this.size) return this.subList(start, this.size)
     return this.subList(start, end)
+}
+
+internal fun <T> safeArrayCopy(
+    src: Array<T>,
+    srcPos: Int,
+    dest: Array<T>,
+    destPos: Int,
+    length: Int
+) {
+    if (srcPos < 0 || destPos < 0) throw IllegalArgumentException("$srcPos < 0 || $destPos < 0")
+    if (srcPos > src.size) throw IllegalArgumentException("$srcPos > ${src.size}")
+    if (srcPos >= src.size || destPos >= dest.size) return
+    if (srcPos + length > src.size) System.arraycopy(
+        src,
+        srcPos,
+        dest,
+        destPos,
+        src.size - srcPos
+    )
+    System.arraycopy(src, srcPos, dest, destPos, length)
+}
+
+internal fun <T> Array<T>.shift(
+    dest: Array<T>,
+    shift: Int
+) {
+    when {
+        shift == 0 -> System.arraycopy(this, 0, dest, 0, this.size)
+        shift > 0 -> {
+            System.arraycopy(
+                this,
+                0,
+                dest,
+                shift,
+                this.size - shift
+            )
+            System.arraycopy(
+                this,
+                this.size - shift,
+                dest,
+                0,
+                shift
+            )
+        }
+        else -> {
+            System.arraycopy(
+                this,
+                0,
+                dest,
+                this.size - abs(shift),
+                abs(shift)
+            )
+            System.arraycopy(
+                this,
+                abs(shift),
+                dest,
+                0,
+                this.size - abs(shift)
+            )
+        }
+    }
 }
