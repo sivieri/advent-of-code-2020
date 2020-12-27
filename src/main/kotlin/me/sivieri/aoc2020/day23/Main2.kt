@@ -5,7 +5,7 @@ object Main2 {
     @JvmStatic
     fun main(args: Array<String>) {
         val data = "653427918"
-        val cups = Cups(data, million = true)
+        val cups = Cups(data, 1_000_000)
         cups.performIterations(10_000_000)
         val res = cups.getTwoCups()
         println(res)
