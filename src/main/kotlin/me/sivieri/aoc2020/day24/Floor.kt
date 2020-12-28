@@ -9,7 +9,7 @@ class Floor(
     fun performInstructions() {
         instructions
             .forEach { line ->
-                val finalCoordinate = move(line, Coordinate(0, 0))
+                val finalCoordinate = move(line, Coordinate(0.0, 0.0))
                 val currentTile = tiles.getOrDefault(finalCoordinate, TileStatus.white)
                 tiles[finalCoordinate] = currentTile.flip()
             }
