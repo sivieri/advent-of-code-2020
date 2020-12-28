@@ -36,4 +36,33 @@ class Floor(
     fun countBlackTiles(): Int = tiles
         .count { it.value == TileStatus.black }
 
+    fun iterate(days: Int) {
+        (1..days).forEach { day ->
+            println("Day $day")
+            val newTiles = tiles
+                .map { tile ->
+                    val adjacent = tile.key.adjacent()
+                    val statuses = adjacent.map {
+                        tiles.getOrDefault(it, TileStatus.white)
+                    }
+                    val blacks = statuses.count { it == TileStatus.black }
+                    if (tile.value == TileStatus.black && (blacks == 0 || blacks > 2)) tile.key to TileStatus.white
+                    else if (tile.value == TileStatus.white && blacks == 2) tile.key to TileStatus.black
+                    else tile.key to tile.value
+                }
+                .toMap()
+            val externalTiles = tiles
+                .flatMap { tile ->
+                    tile
+                        .key
+                        .adjacent()
+                        .filter { !newTiles.containsKey(it) }
+                        .map { it to TileStatus.white }
+                }
+            tiles.clear()
+            tiles.putAll(newTiles)
+            tiles.putAll(externalTiles)
+        }
+    }
+
 }

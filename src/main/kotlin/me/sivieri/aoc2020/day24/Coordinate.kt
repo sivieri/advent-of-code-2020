@@ -1,5 +1,6 @@
 package me.sivieri.aoc2020.day24
 
+// Representation: https://www.redblobgames.com/grids/hexagons/
 data class Coordinate(
     val x: Int,
     val y: Int
@@ -25,5 +26,14 @@ data class Coordinate(
             else this.copy(x = x + 1, y = y - 1)
         }
     }
+
+    fun adjacent(): List<Coordinate> = listOf(
+        this.move(Direction.e),
+        this.move(Direction.w),
+        this.move(Direction.se),
+        this.move(Direction.sw),
+        this.move(Direction.ne),
+        this.move(Direction.nw)
+    )
 
 }
