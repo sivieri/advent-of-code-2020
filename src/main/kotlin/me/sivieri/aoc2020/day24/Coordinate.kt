@@ -3,28 +3,17 @@ package me.sivieri.aoc2020.day24
 // Representation: https://www.redblobgames.com/grids/hexagons/
 data class Coordinate(
     val x: Int,
-    val y: Int
+    val y: Int,
+    val z: Int
 ) {
 
     fun move(direction: Direction): Coordinate = when (direction) {
-        Direction.e -> this.copy(x = x + 1)
-        Direction.w -> this.copy(x = x - 1)
-        Direction.se -> {
-            if (y % 2 == 0) this.copy(y = y + 1)
-            else this.copy(x = x + 1, y = y + 1)
-        }
-        Direction.sw -> {
-            if (y % 2 == 0) this.copy(x = x - 1, y = y + 1)
-            else this.copy(y = y + 1)
-        }
-        Direction.nw -> {
-            if (y % 2 == 0) this.copy(x = x - 1, y = y - 1)
-            else this.copy(y = y - 1)
-        }
-        Direction.ne -> {
-            if (y % 2 == 0) this.copy(y = y - 1)
-            else this.copy(x = x + 1, y = y - 1)
-        }
+        Direction.e -> Coordinate(x + 1, y - 1, z)
+        Direction.w -> Coordinate(x - 1, y + 1, z)
+        Direction.se -> Coordinate(x, y - 1, z + 1)
+        Direction.sw -> Coordinate(x - 1, y, z + 1)
+        Direction.nw -> Coordinate(x, y + 1, z - 1)
+        Direction.ne -> Coordinate(x + 1, y, z - 1)
     }
 
     fun adjacent(): List<Coordinate> = listOf(
@@ -37,6 +26,6 @@ data class Coordinate(
     )
 
     override fun toString(): String {
-        return "($x,$y)"
+        return "($x,$y,$z)"
     }
 }

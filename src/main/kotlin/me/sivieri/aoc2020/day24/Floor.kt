@@ -9,7 +9,7 @@ class Floor(
     fun performInstructions() {
         instructions
             .forEach { line ->
-                val finalCoordinate = move(line, Coordinate(0, 0))
+                val finalCoordinate = move(line, Coordinate(0, 0, 0))
                 val currentTile = tiles.getOrDefault(finalCoordinate, TileStatus.white)
                 tiles[finalCoordinate] = currentTile.flip()
             }
@@ -36,31 +36,20 @@ class Floor(
     fun countBlackTiles(): Int = tiles
         .count { it.value == TileStatus.black }
 
-    private fun printTiles() {
-        val minx = tiles.map { it.key.x }.minOrNull()!!
-        val maxx = tiles.map { it.key.x }.maxOrNull()!!
-        val miny = tiles.map { it.key.y }.minOrNull()!!
-        val maxy = tiles.map { it.key.y }.maxOrNull()!!
-        val buffer = StringBuffer("X: $minx - $maxx; Y: $miny - $maxy\n")
-        for (j in miny..maxy) {
-            if (j % 2 != 0) buffer.append(" ")
-            for (i in minx..maxx) {
-                val coord = Coordinate(i, j)
-                buffer.append(coord.toString())
-                val tile = tiles.getOrDefault(coord, TileStatus.white)
-                buffer.append(tile.small)
-                buffer.append(" ")
-            }
-            buffer.append("\n")
-        }
-        println(buffer.toString())
-    }
-
     fun iterate(days: Int) {
         (1..days).forEach { day ->
             println("Day $day")
-            printTiles()
+            val externalTiles = tiles
+                .flatMap { tile ->
+                    tile
+                        .key
+                        .adjacent()
+                        .filter { !tiles.containsKey(it) }
+                        .map { it to TileStatus.white }
+                }
+                .distinct()
             val newTiles = tiles
+                .plus(externalTiles)
                 .map { tile ->
                     val adjacent = tile.key.adjacent()
                     val statuses = adjacent.map {
@@ -72,16 +61,7 @@ class Floor(
                     else tile.key to tile.value
                 }
                 .toMap()
-            val externalTiles = tiles
-                .flatMap { tile ->
-                    tile
-                        .key
-                        .adjacent()
-                        .map { it to TileStatus.white }
-                }
-                .distinct()
             tiles.clear()
-            tiles.putAll(externalTiles)
             tiles.putAll(newTiles)
             println(countBlackTiles())
         }
