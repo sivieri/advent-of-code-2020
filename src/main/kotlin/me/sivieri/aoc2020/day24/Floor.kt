@@ -36,9 +36,30 @@ class Floor(
     fun countBlackTiles(): Int = tiles
         .count { it.value == TileStatus.black }
 
+    private fun printTiles() {
+        val minx = tiles.map { it.key.x }.minOrNull()!!
+        val maxx = tiles.map { it.key.x }.maxOrNull()!!
+        val miny = tiles.map { it.key.y }.minOrNull()!!
+        val maxy = tiles.map { it.key.y }.maxOrNull()!!
+        val buffer = StringBuffer("X: $minx - $maxx; Y: $miny - $maxy\n")
+        for (j in miny..maxy) {
+            if (j % 2 != 0) buffer.append(" ")
+            for (i in minx..maxx) {
+                val coord = Coordinate(i, j)
+                buffer.append(coord.toString())
+                val tile = tiles.getOrDefault(coord, TileStatus.white)
+                buffer.append(tile.small)
+                buffer.append(" ")
+            }
+            buffer.append("\n")
+        }
+        println(buffer.toString())
+    }
+
     fun iterate(days: Int) {
         (1..days).forEach { day ->
             println("Day $day")
+            printTiles()
             val newTiles = tiles
                 .map { tile ->
                     val adjacent = tile.key.adjacent()
@@ -56,12 +77,13 @@ class Floor(
                     tile
                         .key
                         .adjacent()
-                        .filter { !newTiles.containsKey(it) }
                         .map { it to TileStatus.white }
                 }
+                .distinct()
             tiles.clear()
-            tiles.putAll(newTiles)
             tiles.putAll(externalTiles)
+            tiles.putAll(newTiles)
+            println(countBlackTiles())
         }
     }
 

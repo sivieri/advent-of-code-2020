@@ -80,6 +80,38 @@ class FloorTest {
             .split("\n")
         val floor = Floor(input)
         floor.performInstructions()
+        floor.iterate(10)
+        val res = floor.countBlackTiles()
+        Assert.assertEquals(37, res)
+    }
+
+    @Test
+    fun `04 black count iterating test`() {
+        val input = """
+            sesenwnenenewseeswwswswwnenewsewsw
+            neeenesenwnwwswnenewnwwsewnenwseswesw
+            seswneswswsenwwnwse
+            nwnwneseeswswnenewneswwnewseswneseene
+            swweswneswnenwsewnwneneseenw
+            eesenwseswswnenwswnwnwsewwnwsene
+            sewnenenenesenwsewnenwwwse
+            wenwwweseeeweswwwnwwe
+            wsweesenenewnwwnwsenewsenwwsesesenwne
+            neeswseenwwswnwswswnw
+            nenwswwsewswnenenewsenwsenwnesesenew
+            enewnwewneswsewnwswenweswnenwsenwsw
+            sweneswneswneneenwnewenewwneswswnese
+            swwesenesewenwneswnwwneseswwne
+            enesenwswwswneneswsenwnewswseenwsese
+            wnwnesenesenenwwnenwsewesewsesesew
+            nenewswnwewswnenesenwnesewesw
+            eneswnwswnwsenenwnwnwwseeswneewsenese
+            neswnwewnwnwseenwseesewsenwsweewe
+            wseweeenwnesenwwwswnew
+        """.trimIndent()
+            .split("\n")
+        val floor = Floor(input)
+        floor.performInstructions()
         floor.iterate(100)
         val res = floor.countBlackTiles()
         Assert.assertEquals(2208, res)

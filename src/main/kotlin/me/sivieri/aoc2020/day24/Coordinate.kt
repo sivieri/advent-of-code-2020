@@ -36,4 +36,7 @@ data class Coordinate(
         this.move(Direction.nw)
     )
 
+    override fun toString(): String {
+        return "($x,$y)"
+    }
 }

@@ -1,8 +1,8 @@
 package me.sivieri.aoc2020.day24
 
-enum class TileStatus {
+enum class TileStatus(val small: String) {
 
-    white, black;
+    white("W"), black("B");
 
     fun flip(): TileStatus =
         when (this) {
