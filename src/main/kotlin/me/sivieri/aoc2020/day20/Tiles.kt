@@ -152,4 +152,51 @@ class Tiles(input: List<String>) {
         return final
     }
 
+    fun findRoughWaters(): Int {
+        val image = prepareImage()
+        val onlyWater = removeMonsters(image)
+        return onlyWater
+            .flatten()
+            .count { it == Tile.roughWater }
+    }
+
+    private fun removeMonsters(image: Array<Array<Char>>): Array<Array<Char>> {
+        TODO("Not yet implemented")
+    }
+
+    fun prepareImage(): Array<Array<Char>> {
+        val tileImages = puzzle
+            .map {
+                it.map { it.removeBorders() }
+            }
+        val buffer = StringBuffer()
+        tileImages
+            .forEach { row ->
+                for (i in 0 until (tiles.first().image.size - 2)) {
+                    if (i > 0) buffer.append("\n")
+                    val line = row
+                        .flatMap { it[i].toList() }
+                        .joinToString("")
+                    buffer.append(line)
+                }
+                buffer.append("\n")
+            }
+        return buffer
+            .toString()
+            .split("\n")
+            .map { it.toCharArray().toTypedArray() }
+            .toTypedArray()
+    }
+
+    companion object {
+        private val monster = """
+                              # 
+            #    ##    ##    ###
+             #  #  #  #  #  #   
+        """.trimIndent()
+            .split("\n")
+            .map { it.toCharArray().toTypedArray() }
+            .toTypedArray()
+    }
+
 }

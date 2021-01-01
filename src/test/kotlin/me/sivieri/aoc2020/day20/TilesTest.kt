@@ -119,6 +119,33 @@ class TilesTest {
         """.trimIndent()
         .split("\n")
 
+    private val image = """
+        .#.#..#.##...#.##..#####
+        ###....#.#....#..#......
+        ##.##.###.#.#..######...
+        ###.#####...#.#####.#..#
+        ##.#....#.##.####...#.##
+        ...########.#....#####.#
+        ....#..#...##..#.#.###..
+        .####...#..#.....#......
+        #..#.##..#..###.#.##....
+        #.####..#.####.#.#.###..
+        ###.#.#...#.######.#..##
+        #.####....##..########.#
+        ##..##.#...#...#.#.#.#..
+        ...#..#..#.#.##..###.###
+        .#.#....#.##.#...###.##.
+        ###.#...#..#.##.######..
+        .#.#.###.##.##.#..#.##..
+        .####.###.#...###.#..#.#
+        ..#.#..#..#.#.#.####.###
+        #..####...#.#.#.###.###.
+        #####..#####...###....##
+        #.##..#..#...#..####...#
+        .#.###..##..##..####.##.
+        ...###...##...#...#..###
+    """.trimIndent()
+
     @Test
     fun `01 find angles`() {
         val tiles = Tiles(input)
@@ -136,6 +163,33 @@ class TilesTest {
             listOf(1951, 2311, 3079)
         )
         Assert.assertEquals(exp, res)
+    }
+
+    @Test
+    fun `03 compose image`() {
+        val tiles = Tiles(input)
+        tiles.solvePuzzle()
+        val img = tiles
+            .prepareImage()
+        val res = Matrix
+            .mirrorHorizontal(
+                img
+                    .toList()
+                    .subList(0, img.size - 1)
+                    .toTypedArray()
+            )
+            .joinToString("\n") {
+                it.joinToString("")
+            }
+        Assert.assertEquals(image, res)
+    }
+
+    @Test
+    fun `04 find rough waters`() {
+        val tiles = Tiles(input)
+        tiles.solvePuzzle()
+        val roughWaters = tiles.findRoughWaters()
+        Assert.assertEquals(273, roughWaters)
     }
 
 }

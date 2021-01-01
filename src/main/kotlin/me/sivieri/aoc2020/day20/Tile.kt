@@ -46,54 +46,21 @@ class Tile(
 
     fun getEmptyCount(): Int = bordersCount.count { it == 0 }
 
-    fun rotate90(): Tile {
-        val newImage = Array(image.size) { Array(image.first().size) { ' ' } }
-        val row = image.size
+    fun rotate90(): Tile =
+        Tile(id, Matrix.rotate90(image))
 
-        for (i in 0 until row) {
-            for (j in i until row) {
-                val temp = image[i][j]
-                newImage[i][j] = image[j][i]
-                newImage[j][i] = temp
-            }
-        }
+    fun mirrorVertical(): Tile =
+        Tile(id, Matrix.mirrorVertical(image))
 
-        for (i in 0 until row) {
-            for (j in 0 until row / 2) {
-                val temp = newImage[i][j]
-                newImage[i][j] = newImage[i][row - 1 - j]
-                newImage[i][row - 1 - j] = temp
-            }
-        }
+    fun mirrorHorizontal(): Tile =
+        Tile(id, Matrix.mirrorHorizontal(image))
 
-        return Tile(id, newImage)
-    }
-
-    fun mirrorVertical(): Tile {
-        val newImage = Array(image.size) { Array(image.first().size) { ' ' } }
-        val row = image.size
-
-        for (i in 0 until row) {
-            for (j in 0 until row) {
-                newImage[i][row - 1 - j] = image[i][j]
-            }
-        }
-
-        return Tile(id, newImage)
-    }
-
-    fun mirrorHorizontal(): Tile {
-        val newImage = Array(image.size) { Array(image.first().size) { ' ' } }
-        val row = image.size
-
-        for (i in 0 until row) {
-            for (j in 0 until row) {
-                newImage[row - 1 - i][j] = image[i][j]
-            }
-        }
-
-        return Tile(id, newImage)
-    }
+    fun removeBorders(): Array<Array<Char>> =
+        image
+            .toList()
+            .subList(1, image.size - 1)
+            .map { it.toList().subList(1, it.size - 1).toCharArray().toTypedArray() }
+            .toTypedArray()
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -112,6 +79,10 @@ class Tile(
 
     override fun toString(): String {
         return "Tile(id=$id, borders=$bordersCode, mirrorBorders=$mirrorBordersCode, counts=${bordersCount.joinToString(" ")})"
+    }
+
+    companion object {
+        const val roughWater = '#'
     }
 
 }

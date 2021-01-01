@@ -83,4 +83,27 @@ class TileTest {
         Assert.assertArrayEquals(exp, rotated.image)
     }
 
+    @Test
+    fun `04 remove borders test`() {
+        val input = """
+            ..##
+            ##..
+            #...
+            ####
+        """.trimIndent()
+            .split("\n")
+            .map { it.toCharArray().toTypedArray() }
+            .toTypedArray()
+        val tile = Tile(1, input)
+        val image = tile.removeBorders()
+        val exp = """
+            #.
+            ..
+        """.trimIndent()
+            .split("\n")
+            .map { it.toCharArray().toTypedArray() }
+            .toTypedArray()
+        Assert.assertArrayEquals(exp, image)
+    }
+
 }
