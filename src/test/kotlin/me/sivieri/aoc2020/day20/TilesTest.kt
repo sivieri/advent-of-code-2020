@@ -1,6 +1,5 @@
 package me.sivieri.aoc2020.day20
 
-import me.sivieri.aoc2020.multiplyBy
 import org.junit.Assert
 import org.junit.FixMethodOrder
 import org.junit.Test

@@ -134,3 +134,18 @@ internal fun Double.round(decimals: Int): Double {
     repeat(decimals) { multiplier *= 10 }
     return kotlin.math.round(this * multiplier) / multiplier
 }
+
+internal fun <T> Array<T>.arrayEquals(other: Array<T>): Boolean {
+    if (this.size != other.size) return false
+    for (i in this.indices) {
+        if (this[i] != other[i]) return false
+    }
+    return true
+}
+
+internal fun <T> List<Array<T>>.indexOfArray(element: Array<T>): Int {
+    for (i in this.indices) {
+        if (this[i].arrayEquals(element)) return i
+    }
+    return -1
+}

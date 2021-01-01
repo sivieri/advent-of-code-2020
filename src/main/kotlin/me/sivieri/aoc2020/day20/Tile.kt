@@ -2,9 +2,10 @@ package me.sivieri.aoc2020.day20
 
 class Tile(
     val id: Int,
-    private val image: Array<Array<Char>>
+    val image: Array<Array<Char>>
 ) {
 
+    private val size = image.size
     val borders: List<Array<Char>> = listOf(
         image[0],
         image.map { it[size - 1] }.toTypedArray(),
@@ -45,6 +46,55 @@ class Tile(
 
     fun getEmptyCount(): Int = bordersCount.count { it == 0 }
 
+    fun rotate90(): Tile {
+        val newImage = Array(image.size) { Array(image.first().size) { ' ' } }
+        val row = image.size
+
+        for (i in 0 until row) {
+            for (j in i until row) {
+                val temp = image[i][j]
+                newImage[i][j] = image[j][i]
+                newImage[j][i] = temp
+            }
+        }
+
+        for (i in 0 until row) {
+            for (j in 0 until row / 2) {
+                val temp = newImage[i][j]
+                newImage[i][j] = newImage[i][row - 1 - j]
+                newImage[i][row - 1 - j] = temp
+            }
+        }
+
+        return Tile(id, newImage)
+    }
+
+    fun mirrorVertical(): Tile {
+        val newImage = Array(image.size) { Array(image.first().size) { ' ' } }
+        val row = image.size
+
+        for (i in 0 until row) {
+            for (j in 0 until row) {
+                newImage[i][row - 1 - j] = image[i][j]
+            }
+        }
+
+        return Tile(id, newImage)
+    }
+
+    fun mirrorHorizontal(): Tile {
+        val newImage = Array(image.size) { Array(image.first().size) { ' ' } }
+        val row = image.size
+
+        for (i in 0 until row) {
+            for (j in 0 until row) {
+                newImage[row - 1 - i][j] = image[i][j]
+            }
+        }
+
+        return Tile(id, newImage)
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -62,10 +112,6 @@ class Tile(
 
     override fun toString(): String {
         return "Tile(id=$id, borders=$bordersCode, mirrorBorders=$mirrorBordersCode, counts=${bordersCount.joinToString(" ")})"
-    }
-
-    companion object {
-        const val size = 10
     }
 
 }
