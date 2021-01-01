@@ -8,7 +8,8 @@ object Main2 {
     fun main(args: Array<String>) {
         val data = Utils.readInput(20)
         val tiles = Tiles(data)
-        val res = tiles.solvePuzzle()
+        tiles.solvePuzzle()
+        val res = tiles.findRoughWaters()
         println(res)
     }
 

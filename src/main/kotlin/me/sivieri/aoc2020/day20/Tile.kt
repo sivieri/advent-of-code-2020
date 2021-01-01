@@ -50,10 +50,10 @@ class Tile(
         Tile(id, Matrix.rotate90(image))
 
     fun mirrorVertical(): Tile =
-        Tile(id, Matrix.mirrorVertical(image))
+        Tile(id, Matrix.flipVertical(image))
 
     fun mirrorHorizontal(): Tile =
-        Tile(id, Matrix.mirrorHorizontal(image))
+        Tile(id, Matrix.flipHorizontal(image))
 
     fun removeBorders(): Array<Array<Char>> =
         image
@@ -83,6 +83,7 @@ class Tile(
 
     companion object {
         const val roughWater = '#'
+        const val calmWater = '.'
     }
 
 }

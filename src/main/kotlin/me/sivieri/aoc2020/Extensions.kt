@@ -149,3 +149,12 @@ internal fun <T> List<Array<T>>.indexOfArray(element: Array<T>): Int {
     }
     return -1
 }
+
+internal fun Array<Array<Char>>.stringRepresentation(): String =
+    this.joinToString("\n") { it.joinToString("") }
+
+internal fun String.toMatrix(): Array<Array<Char>> =
+    this
+        .split("\n")
+        .map { it.toCharArray().toTypedArray() }
+        .toTypedArray()

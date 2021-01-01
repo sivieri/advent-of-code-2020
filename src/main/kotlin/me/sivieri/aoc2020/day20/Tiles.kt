@@ -1,9 +1,11 @@
 package me.sivieri.aoc2020.day20
 
+import me.sivieri.aoc2020.*
 import me.sivieri.aoc2020.arrayEquals
 import me.sivieri.aoc2020.indexOfAll
 import me.sivieri.aoc2020.indexOfArray
 import me.sivieri.aoc2020.multiplyBy
+import java.lang.IllegalArgumentException
 import java.lang.IllegalStateException
 import kotlin.math.sqrt
 
@@ -161,7 +163,123 @@ class Tiles(input: List<String>) {
     }
 
     private fun removeMonsters(image: Array<Array<Char>>): Array<Array<Char>> {
-        TODO("Not yet implemented")
+        val images = listOf(
+            image,
+            Matrix.flipVertical(image),
+            Matrix.rotate90(image),
+            Matrix.flipVertical(Matrix.rotate90(image)),
+            Matrix.rotate90(Matrix.rotate90(image)),
+            Matrix.flipVertical(Matrix.rotate90(Matrix.rotate90(image))),
+            Matrix.rotate90(Matrix.rotate90(Matrix.rotate90(image))),
+            Matrix.flipVertical(Matrix.rotate90(Matrix.rotate90(Matrix.rotate90(image)))),
+        )
+        images.forEach {
+            val found = searchMonster(it)
+            if (found > 0) return removeMonster(it)
+        }
+        throw IllegalStateException("Unable to find monsters!")
+    }
+
+    private fun removeMonster(image: Array<Array<Char>>): Array<Array<Char>> {
+        val removedImage = image
+            .map { it.toList().toTypedArray() }
+            .toTypedArray()
+        val monsterWidth = monster.first().size
+        val monsterHeight = monster.size
+        val mask = monster
+            .map { it.map { if (it == Tile.roughWater) 1 else 0 }.toTypedArray() }
+            .toTypedArray()
+        val imageWidth = removedImage.first().size
+        val imageHeight = removedImage.size
+        for (i in 0..(imageHeight - monsterHeight)) {
+            for (j in 0..(imageWidth - monsterWidth)) {
+                val sub = image
+                    .sliceArray(i until (i + monsterHeight))
+                    .map { it.sliceArray(j until (j + monsterWidth)) }
+                    .toTypedArray()
+                if (compareWithMask(sub, mask)) {
+                    removeWithMask(removedImage, mask, i, i + monsterHeight, j, j + monsterWidth)
+                }
+            }
+        }
+        return removedImage
+    }
+
+    @Suppress("ReplaceManualRangeWithIndicesCalls")
+    private fun removeWithMask(
+        image: Array<Array<Char>>,
+        mask: Array<Array<Int>>,
+        startRow: Int,
+        endRow: Int,
+        startCol: Int,
+        endCol: Int
+    ) {
+        if (endRow - startRow != monster.size || endCol - startCol != monster.first().size) {
+            throw IllegalArgumentException("Wrong sizes!")
+        }
+        for (i in startRow until endRow) {
+            for (j in startCol until endCol) {
+                if (mask[i - startRow][j - startCol] == 1) image[i][j] = Tile.calmWater
+            }
+        }
+    }
+
+    fun searchMonsters(): Int {
+        val image = prepareImage()
+        val images = listOf(
+            image,
+            Matrix.flipVertical(image),
+            Matrix.rotate90(image),
+            Matrix.flipVertical(Matrix.rotate90(image)),
+            Matrix.rotate90(Matrix.rotate90(image)),
+            Matrix.flipVertical(Matrix.rotate90(Matrix.rotate90(image))),
+            Matrix.rotate90(Matrix.rotate90(Matrix.rotate90(image))),
+            Matrix.flipVertical(Matrix.rotate90(Matrix.rotate90(Matrix.rotate90(image)))),
+        )
+        images.forEach {
+            val found = searchMonster(it)
+            if (found > 0) return found
+        }
+        return 0
+    }
+
+    private fun searchMonster(
+        image: Array<Array<Char>>
+    ): Int {
+        val monsterWidth = monster.first().size
+        val monsterHeight = monster.size
+        val mask = monster
+            .map { it.map { if (it == Tile.roughWater) 1 else 0 }.toTypedArray() }
+            .toTypedArray()
+        val imageWidth = image.first().size
+        val imageHeight = image.size
+        var counter = 0
+        for (i in 0..(imageHeight - monsterHeight)) {
+            for (j in 0..(imageWidth - monsterWidth)) {
+                val sub = image
+                    .sliceArray(i until (i + monsterHeight))
+                    .map { it.sliceArray(j until (j + monsterWidth)) }
+                    .toTypedArray()
+                if (compareWithMask(sub, mask)) counter++
+            }
+        }
+        return counter
+    }
+
+    @Suppress("ReplaceManualRangeWithIndicesCalls")
+    private fun compareWithMask(
+        image: Array<Array<Char>>,
+        mask: Array<Array<Int>>
+    ): Boolean {
+        if (image.size != monster.size || image.first().size != monster.first().size) {
+            throw IllegalArgumentException("Wrong sizes!")
+        }
+        for (i in 0 until image.size) {
+            for (j in 0 until image.first().size) {
+                if (mask[i][j] == 1 && image[i][j] != monster[i][j]) return false
+            }
+        }
+        return true
     }
 
     fun prepareImage(): Array<Array<Char>> {
@@ -184,17 +302,17 @@ class Tiles(input: List<String>) {
         return buffer
             .toString()
             .split("\n")
+            .filter { it != "" }
             .map { it.toCharArray().toTypedArray() }
             .toTypedArray()
     }
 
     companion object {
-        private val monster = """
-                              # 
-            #    ##    ##    ###
-             #  #  #  #  #  #   
-        """.trimIndent()
-            .split("\n")
+        private val monster = listOf(
+            "                  # ",
+            "#    ##    ##    ###",
+            " #  #  #  #  #  #   "
+        )
             .map { it.toCharArray().toTypedArray() }
             .toTypedArray()
     }

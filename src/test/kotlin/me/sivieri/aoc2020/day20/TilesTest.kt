@@ -172,12 +172,7 @@ class TilesTest {
         val img = tiles
             .prepareImage()
         val res = Matrix
-            .mirrorHorizontal(
-                img
-                    .toList()
-                    .subList(0, img.size - 1)
-                    .toTypedArray()
-            )
+            .flipHorizontal(img)
             .joinToString("\n") {
                 it.joinToString("")
             }
@@ -185,7 +180,15 @@ class TilesTest {
     }
 
     @Test
-    fun `04 find rough waters`() {
+    fun `04 find monsters`() {
+        val tiles = Tiles(input)
+        tiles.solvePuzzle()
+        val monsters = tiles.searchMonsters()
+        Assert.assertEquals(2, monsters)
+    }
+
+    @Test
+    fun `05 find rough waters`() {
         val tiles = Tiles(input)
         tiles.solvePuzzle()
         val roughWaters = tiles.findRoughWaters()
