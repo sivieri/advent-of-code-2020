@@ -116,7 +116,7 @@ class Tiles(input: List<String>) {
                     secondUpperLocation == 0 -> cur.mirrorVertical()
                     secondUpperLocation == 1 -> cur.rotate90().rotate90().rotate90().mirrorVertical()
                     secondUpperLocation == 2 -> cur.rotate90().rotate90()
-                    secondUpperLocation == 3 -> cur.rotate90().mirrorVertical()
+                    secondUpperLocation == 3 -> cur.rotate90()
                     else -> throw IllegalStateException("Non-existing state")
                 }
             }
