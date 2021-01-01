@@ -9,9 +9,7 @@ import org.junit.runners.MethodSorters
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class TilesTest {
 
-    @Test
-    fun `01 find angles`() {
-        val input = """
+    private val input = """
             Tile 2311:
             ..##.#..#.
             ##..#.....
@@ -120,11 +118,25 @@ class TilesTest {
             ..#.......
             ..#.###...
         """.trimIndent()
-            .split("\n")
+        .split("\n")
+
+    @Test
+    fun `01 find angles`() {
         val tiles = Tiles(input)
-        val angles = tiles.findAngles()
-        val res = angles.map { it.id }.multiplyBy { it.toLong() }
+        val res = tiles.getAnglesIdProduct()
         Assert.assertEquals(20899048083289L, res)
+    }
+
+    @Test
+    fun `02 solve puzzle`() {
+        val tiles = Tiles(input)
+        val res = tiles.solvePuzzle()
+        val exp = listOf(
+            listOf(2971, 1489, 1171),
+            listOf(2729, 1427, 2473),
+            listOf(1951, 2311, 3079)
+        )
+        Assert.assertEquals(exp, res)
     }
 
 }
